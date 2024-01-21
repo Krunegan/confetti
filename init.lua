@@ -1,7 +1,7 @@
 --[[
 
 The MIT License (MIT)
-Copyright (C) 2023 Acronymmk
+Copyright (C) 2024 Flay Krunegan
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this
 software and associated documentation files (the "Software"), to deal in the Software
@@ -22,208 +22,99 @@ DEALINGS IN THE SOFTWARE.
 ]]
 
 minetest.register_craft({
-	output = "confetti:confetti",
-	recipe = {
-		{"", "dye:blue", "dye:yellow"},
-		{"", "default:stick", "dye:red"},
-		{"default:stick", "", ""},
-	}
+    output = "confetti:confetti_rainbow",
+    recipe = {
+        {"", "dye:blue", "dye:yellow"},
+        {"", "default:stick", "dye:red"},
+        {"default:stick", "", ""},
+    }
 })
 
-minetest.register_craftitem("confetti:confetti", {
-	description = "Confetti",
-	inventory_image = "confetti.png",
+local confetti_colors = {
+    "red", "blue", "green", "white", "yellow", "black", "violet", "pink", "orange", "cyan", "brown"
+}
+
+for _, color in ipairs(confetti_colors) do
+    minetest.register_craft({
+        output = "confetti:" .. color,
+        recipe = {
+            {"", "dye:" .. color, "dye:" .. color},
+            {"", "default:stick", "dye:" .. color},
+            {"default:stick", "", ""},
+        }
+    })
+
+    minetest.register_craftitem("confetti:" .. color, {
+        description = color:gsub("^%l", string.upper) .. " Confetti",
+        inventory_image = "confetti_" .. color .. "_item.png",
+        stack_max = 99,
+        on_use = function(itemstack, user, pointed_thing)
+            local pos = user:getpos()
+            local dir = user:get_look_dir()
+            local velocity = 8
+            local particle_amount = 110
+            local particle_size = 1.5
+
+            for _ = 1, particle_amount do
+                local random_vel = {
+                    x = dir.x * velocity + math.random(-5, 5),
+                    y = dir.y * velocity + math.random(-5, 5),
+                    z = dir.z * velocity + math.random(-5, 5)
+                }
+
+                minetest.add_particle({
+                    pos = {x = pos.x, y = pos.y + 1.5, z = pos.z},
+                    velocity = random_vel,
+                    acceleration = {x = 0, y = -10, z = 0},
+                    expirationtime = 8,
+                    size = particle_size,
+                    collisiondetection = true,
+                    collision_removal = true,
+                    texture = "confetti_" .. color .. ".png",
+                })
+            end
+
+            itemstack:take_item(1)
+            return itemstack
+        end,
+    })
+end
+
+minetest.register_craftitem("confetti:confetti_rainbow", {
+    description = "Confetti",
+    inventory_image = "confetti_rainbow.png",
     stack_max = 99,
-	on_use = function(itemstack, user, pointed_thing)
-		local pos = user:getpos()
-		local dir = user:get_look_dir()
-		local velocity = 8
-		local particle_amount = 10
-		local particle_size = 1.5
+    on_use = function(itemstack, user, pointed_thing)
+        local pos = user:getpos()
+        local dir = user:get_look_dir()
+        local velocity = 8
+        local particle_amount = 10
+        local particle_size = 1.5
 
-		
-		for a=1,particle_amount do
-			local random_vel = {x=dir.x*velocity+math.random(-5,5), y=dir.y*velocity+math.random(-5,5), z=dir.z*velocity+math.random(-5,5)}
-			
-			local red = minetest.add_particle({
-				pos = {x=pos.x, y=pos.y+1.5, z=pos.z},
-				velocity = random_vel,
-				acceleration = {x=0, y=-10, z=0},
-				expirationtime = 8,
-				size = particle_size,
-				collisiondetection = true,
-				collision_removal = true,
-				texture = "confetti_red.png",
-			})
+        for _, color in ipairs(confetti_colors) do
+            for _ = 1, particle_amount do
+                local random_vel = {
+                    x = dir.x * velocity + math.random(-5, 5),
+                    y = dir.y * velocity + math.random(-5, 5),
+                    z = dir.z * velocity + math.random(-5, 5)
+                }
 
-		end
-
-        for b=1,particle_amount do
-			local random_vel = {x=dir.x*velocity+math.random(-5,5), y=dir.y*velocity+math.random(-5,5), z=dir.z*velocity+math.random(-5,5)}
-			
-            local blue = minetest.add_particle({
-                pos = {x=pos.x, y=pos.y+1.5, z=pos.z}, 
-                velocity = random_vel, 
-                acceleration = {x=0, y=-10, z=0},
-                expirationtime = 8,
-                size = particle_size,
-                collisiondetection = true,
-                collision_removal = true,
-                texture = "confetti_blue.png",
-            })
-
-
-		end
-
-        for c=1,particle_amount do
-			local random_vel = {x=dir.x*velocity+math.random(-5,5), y=dir.y*velocity+math.random(-5,5), z=dir.z*velocity+math.random(-5,5)}
-			
-            local green = minetest.add_particle({
-                pos = {x=pos.x, y=pos.y+1.5, z=pos.z}, 
-                velocity = random_vel, 
-                acceleration = {x=0, y=-10, z=0},
-                expirationtime = 8,
-                size = particle_size,
-                collisiondetection = true,
-                collision_removal = true,
-                texture = "confetti_green.png",
-            })
-
-		end
-
-        for d=1,particle_amount do
-			local random_vel = {x=dir.x*velocity+math.random(-5,5), y=dir.y*velocity+math.random(-5,5), z=dir.z*velocity+math.random(-5,5)}
-			
-            local white = minetest.add_particle({
-                pos = {x=pos.x, y=pos.y+1.5, z=pos.z}, 
-                velocity = random_vel, 
-                acceleration = {x=0, y=-10, z=0},
-                expirationtime = 8,
-                size = particle_size,
-                collisiondetection = true,
-                collision_removal = true,
-                texture = "confetti_white.png",
-            })
-
-		end
-
-        for e=1,particle_amount do
-			local random_vel = {x=dir.x*velocity+math.random(-5,5), y=dir.y*velocity+math.random(-5,5), z=dir.z*velocity+math.random(-5,5)}
-			
-            local yellow = minetest.add_particle({
-                pos = {x=pos.x, y=pos.y+1.5, z=pos.z}, 
-                velocity = random_vel, 
-                acceleration = {x=0, y=-10, z=0},
-                expirationtime = 8,
-                size = particle_size,
-                collisiondetection = true,
-                collision_removal = true,
-                texture = "confetti_yellow.png",
-            })
-
-		end
-
-        for f=1,particle_amount do
-			local random_vel = {x=dir.x*velocity+math.random(-5,5), y=dir.y*velocity+math.random(-5,5), z=dir.z*velocity+math.random(-5,5)}
-			
-            local black = minetest.add_particle({
-                pos = {x=pos.x, y=pos.y+1.5, z=pos.z}, 
-                velocity = random_vel, 
-                acceleration = {x=0, y=-10, z=0},
-                expirationtime = 8,
-                size = particle_size,
-                collisiondetection = true,
-                collision_removal = true,
-                texture = "confetti_black.png",
-            })
-
-		end
-
-        for g=1,particle_amount do
-			local random_vel = {x=dir.x*velocity+math.random(-5,5), y=dir.y*velocity+math.random(-5,5), z=dir.z*velocity+math.random(-5,5)}
-			
-            local purple = minetest.add_particle({
-                pos = {x=pos.x, y=pos.y+1.5, z=pos.z}, 
-                velocity = random_vel, 
-                acceleration = {x=0, y=-10, z=0},
-                expirationtime = 8,
-                size = particle_size,
-                collisiondetection = true,
-                collision_removal = true,
-                texture = "confetti_purple.png",
-            })
-
-		end
-
-        for h=1,particle_amount do
-			local random_vel = {x=dir.x*velocity+math.random(-5,5), y=dir.y*velocity+math.random(-5,5), z=dir.z*velocity+math.random(-5,5)}
-			
-            local pink = minetest.add_particle({
-                pos = {x=pos.x, y=pos.y+1.5, z=pos.z}, 
-                velocity = random_vel, 
-                acceleration = {x=0, y=-10, z=0},
-                expirationtime = 8,
-                size = particle_size,
-                collisiondetection = true,
-                collision_removal = true,
-                texture = "confetti_pink.png",
-            })
-
-
-		end
-
-        for i=1,particle_amount do
-			local random_vel = {x=dir.x*velocity+math.random(-5,5), y=dir.y*velocity+math.random(-5,5), z=dir.z*velocity+math.random(-5,5)}
-			
-            local orange = minetest.add_particle({
-                pos = {x=pos.x, y=pos.y+1.5, z=pos.z}, 
-                velocity = random_vel, 
-                acceleration = {x=0, y=-10, z=0},
-                expirationtime = 8,
-                size = particle_size,
-                collisiondetection = true,
-                collision_removal = true,
-                texture = "confetti_orange.png",
-            })
-
-		end
-
-        for j=1,particle_amount do
-			local random_vel = {x=dir.x*velocity+math.random(-5,5), y=dir.y*velocity+math.random(-5,5), z=dir.z*velocity+math.random(-5,5)}
-			
-            local cyan = minetest.add_particle({
-                pos = {x=pos.x, y=pos.y+1.5, z=pos.z}, 
-                velocity = random_vel, 
-                acceleration = {x=0, y=-10, z=0},
-                expirationtime = 8,
-                size = particle_size,
-                collisiondetection = true,
-                collision_removal = true,
-                texture = "confetti_cyan.png",
-            })
-
-		end
-
-        for k=1,particle_amount do
-			local random_vel = {x=dir.x*velocity+math.random(-5,5), y=dir.y*velocity+math.random(-5,5), z=dir.z*velocity+math.random(-5,5)}
-			
-            local brown = minetest.add_particle({
-                pos = {x=pos.x, y=pos.y+1.5, z=pos.z}, 
-                velocity = random_vel, 
-                acceleration = {x=0, y=-10, z=0},
-                expirationtime = 8,
-                size = particle_size,
-                collisiondetection = true,
-                collision_removal = true,
-                texture = "confetti_brown.png",
-            })
-
-		end
-
+                minetest.add_particle({
+                    pos = {x = pos.x, y = pos.y + 1.5, z = pos.z},
+                    velocity = random_vel,
+                    acceleration = {x = 0, y = -10, z = 0},
+                    expirationtime = 8,
+                    size = particle_size,
+                    collisiondetection = true,
+                    collision_removal = true,
+                    texture = "confetti_" .. color .. ".png",
+                })
+            end
+        end
 
         itemstack:take_item(1)
-		return itemstack
-	end,
+        return itemstack
+    end,
 })
 
 print('[Confetti] loaded...')

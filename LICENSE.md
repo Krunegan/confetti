@@ -2,7 +2,7 @@ License of source code
 ----------------------
 
 The MIT License (MIT)
-Copyright (C) 2022 Acronymmk
+Copyright (C) 2024 Flay Krunegan
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this
 software and associated documentation files (the "Software"), to deal in the Software
@@ -28,7 +28,7 @@ Licenses of media (textures)
 ----------------------------
 
 Attribution 4.0 International (CC BY 4.0)
-Copyright (C) 2022 Acronymmk
+Copyright (C) 2024 Flay Krunegan
 
 You are free to:
 Share — copy and redistribute the material in any medium or format.
