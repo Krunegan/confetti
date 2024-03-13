@@ -160,7 +160,7 @@ for _, color in ipairs(confetti_colors) do
                 player_last_use[player_name] = current_time
             end
 
-            create_confetti(itemstack, user, pointed_thing, texpool)
+            return create_confetti(itemstack, user, pointed_thing, texpool)
         end,
     })
 end
@@ -183,7 +183,7 @@ minetest.register_craftitem("confetti:confetti_rainbow", {
             player_last_use[player_name] = current_time
         end
 
-        create_confetti(itemstack, user, pointed_thing, rainbow_texpool)
+        return create_confetti(itemstack, user, pointed_thing, rainbow_texpool)
     end,
 })
 
