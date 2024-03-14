@@ -92,7 +92,7 @@ local create_confetti = function(itemstack, user, _pointed_thing, texpool)
             style = "pulse",
             reps = 3,
             { min = vector.new(0, 0, 0),             max = vector.new(0, 0, 0), },
-            { min = vector.new(-jitter, 0, -jitter), max = vector.new(jitter, 0, jitter), }
+            { min = vector.new(-jitter, -jitter*0.2, -jitter), max = vector.new(jitter, jitter*0.4, jitter), }
         },
         attract = {
             kind = "point",
