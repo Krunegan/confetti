@@ -1,26 +1,3 @@
---[[
-
-The MIT License (MIT)
-Copyright (C) 2024 Flay Krunegan
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this
-software and associated documentation files (the "Software"), to deal in the Software
-without restriction, including without limitation the rights to use, copy, modify, merge,
-publish, distribute, sublicense, and/or sell copies of the Software, and to permit
-persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or
-substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
-INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
-PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
-FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-DEALINGS IN THE SOFTWARE.
-
-]]
-
 local modname = minetest.get_current_modname()
 
 minetest.log("action", "[MOD] " .. modname .. " loading...")
@@ -165,19 +142,46 @@ for _, color in ipairs(confetti_colors) do
     })
 end
 
-minetest.register_craftitem("confetti:confetti_rainbow", {
-    description = "Confetti",
-    inventory_image = "confetti_rainbow.png",
+
+minetest.register_craft({
+    output = "confetti:snow",
+    recipe = {
+        { "", "dye:cyan", "dye:blue"},
+        { "", "default:stick", "dye:white"},
+        { "default:stick", "","" },
+    }
+})
+
+minetest.register_craftitem("confetti:snow", {
+    description =  "Snow Confetti",
+    inventory_image = "confetti_snow_item.png",
     stack_max = 99,
     on_use = function(itemstack, user, pointed_thing)
-        -- FIXME check if user is a player
         if user and type(user) == "userdata" and user:is_player() then
             local player_name = user:get_player_name()
 
             local current_time = minetest.get_us_time()/1000000
             local last_time = player_last_use[player_name]
             if last_time and current_time - last_time < confetti.cooldown then
-                --minetest.chat_send_player(player_name, ("Don't spam, wait %fs."):format(confetti.cooldown - (current_time - last_time)))
+                return
+            end
+            player_last_use[player_name] = current_time
+        end
+        local texpool = { "confetti_snow.png" }
+        return create_confetti(itemstack, user, pointed_thing, texpool)
+    end,
+})
+
+minetest.register_craftitem("confetti:confetti_rainbow", {
+    description = "Confetti",
+    inventory_image = "confetti_rainbow.png",
+    stack_max = 99,
+    on_use = function(itemstack, user, pointed_thing)
+        if user and type(user) == "userdata" and user:is_player() then
+            local player_name = user:get_player_name()
+            local current_time = minetest.get_us_time()/1000000
+            local last_time = player_last_use[player_name]
+            if last_time and current_time - last_time < confetti.cooldown then
                 return
             end
             player_last_use[player_name] = current_time
