@@ -6,11 +6,9 @@ local modpath = minetest.get_modpath(modname)
 
 confetti = {}
 confetti.particle_amount = tonumber(minetest.settings:get(modname .. ".particle_amount")) or 110
-confetti.cooldown = tonumber(minetest.settings:get(modname .. ".cooldown_delay")) or 0.3
+confetti.cooldown = tonumber(minetest.settings:get(modname .. ".cooldown_delay")) or 0.5
 
--- needed for the cooldown, stores last time player used confetti
 local player_last_use = {}
-
 
 minetest.register_craft({
     output = "confetti:confetti_rainbow",
@@ -27,10 +25,11 @@ local confetti_colors = {
 
 local rainbow_texpool = {}
 for _, color in ipairs(confetti_colors) do
-    if color ~= "black" then -- don't like that one
-        table.insert(rainbow_texpool, "confetti_" .. color .. ".png")
+    for i = 1, 6 do
+        table.insert(rainbow_texpool, "confetti_" .. color .. "_" .. i .. ".png")
     end
 end
+
 
 -- get actual eye_pos of the player (including eye_offset)
 local function player_get_rel_eye_pos(player)
@@ -80,7 +79,7 @@ local create_confetti = function(itemstack, user, _pointed_thing, texpool)
         exptime = 5,
         size = particle_size,
         collisiondetection = true,
-        collision_removal = true,
+        -- collision_removal = true,
         texpool = texpool,
     }
 
@@ -96,14 +95,6 @@ local create_confetti = function(itemstack, user, _pointed_thing, texpool)
 
     minetest.add_particlespawner(def)
 
-    -- sound_name = "mesecons_button_pop"
-    -- minetest.sound_play(sound_name, {
-    --     pos = sound_pos,
-    --     max_hear_distance = 40,
-    --     gain = 1.0,
-    --     pitch = 6.0,
-    -- })
-
     itemstack:take_item(1)
     return itemstack
 end
@@ -118,7 +109,10 @@ for _, color in ipairs(confetti_colors) do
         }
     })
 
-    local texpool = { "confetti_" .. color .. ".png" }
+    local texpool = {}
+    for i = 1, 6 do
+        table.insert(texpool, "confetti_" .. color .. "_" .. i .. ".png")
+    end
 
     minetest.register_craftitem("confetti:" .. color, {
         description = color:gsub("^%l", string.upper) .. " Confetti",
@@ -136,12 +130,15 @@ for _, color in ipairs(confetti_colors) do
                 end
                 player_last_use[player_name] = current_time
             end
-
+            minetest.sound_play("confetti", {
+                pos = pos,
+                max_hear_distance = 16,
+                gain = 0.4,
+            })
             return create_confetti(itemstack, user, pointed_thing, texpool)
         end,
     })
 end
-
 
 minetest.register_craft({
     output = "confetti:snow",
@@ -186,7 +183,11 @@ minetest.register_craftitem("confetti:confetti_rainbow", {
             end
             player_last_use[player_name] = current_time
         end
-
+        minetest.sound_play("confetti", {
+            pos = pos,
+            max_hear_distance = 16,
+            gain = 0.4,
+        })
         return create_confetti(itemstack, user, pointed_thing, rainbow_texpool)
     end,
 })
