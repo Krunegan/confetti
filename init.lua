@@ -130,6 +130,7 @@ for _, color in ipairs(confetti_colors) do
                 end
                 player_last_use[player_name] = current_time
             end
+            local pos = user:get_pos()
             minetest.sound_play("confetti", {
                 pos = pos,
                 max_hear_distance = 16,
@@ -183,6 +184,7 @@ minetest.register_craftitem("confetti:confetti_rainbow", {
             end
             player_last_use[player_name] = current_time
         end
+        local pos = user:get_pos()
         minetest.sound_play("confetti", {
             pos = pos,
             max_hear_distance = 16,
